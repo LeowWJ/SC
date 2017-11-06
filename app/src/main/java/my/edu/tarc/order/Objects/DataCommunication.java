@@ -7,14 +7,14 @@ import my.edu.tarc.order.MainActivity;
  */
 
 public interface DataCommunication {
-    public String getCanteen();
-    public void setCanteen(String canteenName);
+    String getCanteen();
+    void setCanteen(String canteenName);
 
-    public String getStall();
-    public void setStall(String stallName);
-    public String getStudID();
-    public void setStudID(String studID);
-    public int getProdID();
-    public void setProdID(int prodID);
-    public void setOrderDesc(int orderID, String productName, double Total, String orderStatus, String orderDateTime);
+    String getStall();
+    void setStall(String stallName);
+    String getStudID();
+    void setStudID(String studID);
+    int getProdID();
+    void setProdID(int prodID);
+    void setOrderDesc(int orderID, String productName, double Total, String orderStatus, String orderDateTime);
 }

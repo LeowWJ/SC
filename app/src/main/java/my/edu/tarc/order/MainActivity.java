@@ -13,7 +13,7 @@ import my.edu.tarc.order.Objects.Order;
 public class MainActivity extends AppCompatActivity implements DataCommunication{
 
     private String canteenName;
-    private static String stallName;
+    private String stallName;
     private String StudID = null;
     private int ProdID = 0;
     public static Order OrderDetail;
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements DataCommunication
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mTextMessage = findViewById(R.id.message);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements DataCommunication
     }
 
     @Override
-    public static String getStall() {
+    public String getStall() {
         return stallName;
     }
 
