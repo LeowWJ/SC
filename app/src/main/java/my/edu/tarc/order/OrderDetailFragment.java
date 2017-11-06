@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class OrderDetailFragment extends Fragment {
     TextView textViewOrderID, textViewProductName, textViewPayment, textViewPaymentStatus, textViewOrderDateTime;
     Integer orderID = MainActivity.OrderDetail.getOrderID();
     String oID = orderID.toString();
+    final String TAG = "OrderID";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,10 @@ public class OrderDetailFragment extends Fragment {
         buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Pass orderID to payment
+                // add this, your class to the bracket, not sure the syntax correct or not
+                Intent intent = new Intent();
+                intent.putExtra(TAG,oID);
+                startActivity(intent);
             }
         });
 

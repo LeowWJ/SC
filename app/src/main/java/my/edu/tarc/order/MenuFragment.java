@@ -38,9 +38,10 @@ import com.android.volley.RequestQueue;
 
 public class MenuFragment extends Fragment {
 
+    public String MercName = MainActivity.getStall();
     public static boolean allowRefresh;
     public static final String TAG = "my.edu.tarc.order";
-    public String MercName = MainActivity.getStall();
+
     public static List<Product> listMenu = null;
 
     GridView gridViewMenu;
@@ -164,9 +165,11 @@ public class MenuFragment extends Fragment {
         @Override
         protected void onPreExecute() {
 
-            if (!progressDialog.isShowing()) ;
-            progressDialog.setMessage("Retrieving Menu List");
-            progressDialog.show();
+            if (!progressDialog.isShowing()) {
+                progressDialog.setMessage("Retrieving Menu List");
+                progressDialog.show();
+            };
+
 
 
         }

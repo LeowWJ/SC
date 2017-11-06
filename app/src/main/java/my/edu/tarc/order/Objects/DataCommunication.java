@@ -10,7 +10,6 @@ public interface DataCommunication {
     String getCanteen();
     void setCanteen(String canteenName);
 
-    String getStall();
     void setStall(String stallName);
     String getStudID();
     void setStudID(String studID);

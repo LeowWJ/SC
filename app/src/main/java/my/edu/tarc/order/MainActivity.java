@@ -13,7 +13,7 @@ import my.edu.tarc.order.Objects.Order;
 public class MainActivity extends AppCompatActivity implements DataCommunication{
 
     private String canteenName;
-    private String stallName;
+    private static String stallName;
     private String StudID = null;
     private int ProdID = 0;
     public static Order OrderDetail;
@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements DataCommunication
         this.canteenName = canteenName;
     }
 
-    @Override
-    public String getStall() {
+    public static String getStall() {
         return stallName;
     }
 
