@@ -9,6 +9,7 @@ import my.edu.tarc.order.MainActivity;
 public interface DataCommunication {
     public String getCanteen();
     public void setCanteen(String canteenName);
+
     public String getStall();
     public void setStall(String stallName);
     public String getStudID();

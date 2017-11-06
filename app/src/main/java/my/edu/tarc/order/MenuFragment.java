@@ -38,10 +38,9 @@ import com.android.volley.RequestQueue;
 
 public class MenuFragment extends Fragment {
 
-    DataCommunication stallIdentifier;
     public static boolean allowRefresh;
     public static final String TAG = "my.edu.tarc.order";
-    public String MercName = stallIdentifier.getStall();
+    public String MercName = MainActivity.getStall();
     public static List<Product> listMenu = null;
 
     GridView gridViewMenu;
@@ -67,7 +66,7 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
         allowRefresh = false;
-        gridViewMenu = (GridView)v.findViewById(R.id.gridViewMenu);
+        gridViewMenu = v.findViewById(R.id.gridViewMenu);
 
         progressDialog = new ProgressDialog(v.getContext());
 
@@ -86,7 +85,6 @@ public class MenuFragment extends Fragment {
                                     int position, long id) {
 
                 MainActivity.OrderDetail.setOrderID(position);
-
             }
         });
             return v;
