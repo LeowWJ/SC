@@ -28,9 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
-import my.edu.tarc.order.Objects.DataCommunication;
 import my.edu.tarc.order.Objects.MenuAdapter;
 import my.edu.tarc.order.Objects.Product;
 
@@ -38,15 +36,11 @@ import com.android.volley.RequestQueue;
 
 public class MenuFragment extends Fragment {
 
-    public String MercName = MainActivity.getStall();
+    public String MercName = OrderMainActivity.getStall();
     public static boolean allowRefresh;
     public static final String TAG = "my.edu.tarc.order";
 
-    public static List<Product> listMenu = null;
-
     GridView gridViewMenu;
-    String walletID;
-    DataCommunication walletIdentifier;
     ProgressDialog progressDialog;
     RequestQueue queue;
 
@@ -71,8 +65,8 @@ public class MenuFragment extends Fragment {
 
         progressDialog = new ProgressDialog(v.getContext());
 
-        if(MenuFragment.listMenu == null){
-            listMenu = new ArrayList<>();
+        if(OrderMainActivity.listMenu == null){
+            OrderMainActivity.listMenu = new ArrayList<>();
             String type = "retrieveMenu";
             BackgroundWorker backgroundWorker = new BackgroundWorker(v.getContext());
             backgroundWorker.execute(type,  MercName);
@@ -84,15 +78,27 @@ public class MenuFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-
-                MainActivity.OrderDetail.setOrderID(position);
+                Product chosenProd = (Product) parent.getItemAtPosition(position);
+                String chosenProdID = chosenProd.getProdID();
+                String chosenProdName = chosenProd.getProdName();
+                String chosenProdDesc = chosenProd.getProdDesc();
+                double chosenProdPrice = chosenProd.getPrice();
+                OrderMainActivity.setProdID(chosenProdID);
+                OrderMainActivity.setProdName(chosenProdName);
+                OrderMainActivity.setProdDesc(chosenProdDesc);
+                OrderMainActivity.setProdPrice(chosenProdPrice);
+                //OrderingFragment nextFrag= new OrderingFragment();
+                /*getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, nextFrag,"findThisFragment")
+                        .addToBackStack(null)
+                        .commit();*/
             }
         });
             return v;
     }
 
     private void loadListing() {
-        final MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.fragment_menu,listMenu);
+        final MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.fragment_menu, OrderMainActivity.listMenu);
         gridViewMenu.setAdapter(adapter);
 
     }
@@ -181,20 +187,21 @@ public class MenuFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(result);
 
                 try {
-                    listMenu.clear();
+                    OrderMainActivity.listMenu.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject courseResponse= (JSONObject) jsonArray.get(i);
 
-
-
                         String ProdID = courseResponse.getString("ProdID");
                         String ProdName = courseResponse.getString("ProdName");
+                        String ProdCat = courseResponse.getString("ProdCat");
                         String ProdDesc = courseResponse.getString("ProdDesc");
                         double ProdPrice = Double.parseDouble(courseResponse.getString("ProdPrice"));
+                        String SupplierName = courseResponse.getString("SupplierName");
                         String ImageURL = courseResponse.getString("url");
 
-                        Product menuItem = new Product(ProdID, ProdName, ProdDesc, ProdPrice, ImageURL);
-                        listMenu.add(menuItem);
+                        Product menuItem = new Product(ProdID, ProdName, ProdCat, ProdDesc,
+                                ProdPrice,SupplierName ,ImageURL);
+                        OrderMainActivity.listMenu.add(menuItem);
 
                     }
 

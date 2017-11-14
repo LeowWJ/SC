@@ -1,7 +1,5 @@
 package my.edu.tarc.order;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,15 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import my.edu.tarc.order.Objects.DataCommunication;
-
 
 public class StallFragment extends Fragment {
 
     Button buttonStall1, buttonStall2, buttonStall3, buttonStall4, buttonStall5, buttonStall6, buttonStall7, buttonStall8, buttonStall9;
     public static boolean allowRefresh;
-    DataCommunication stallIdentifier;
-    String canteenChoice = stallIdentifier.getCanteen();
+    String canteenChoice = OrderMainActivity.getCanteen();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +54,7 @@ public class StallFragment extends Fragment {
                 buttonStall1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        stallIdentifier.setStall("Convenience Store");
+                        OrderMainActivity.setStall("Convenience Store");
                         MenuFragment nextFrag= new MenuFragment();
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.content, nextFrag,"findThisFragment")
@@ -134,7 +129,7 @@ public class StallFragment extends Fragment {
     }
 
 
-    @Override
+    /*@Override
     public void onAttach(Context context) {
        super.onAttach(context);
         // This makes sure that the container activity has implemented
@@ -145,7 +140,7 @@ public class StallFragment extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement DataCommunication");
         }
-    }
+    }*/
 
     @Override
     public void onDetach() {

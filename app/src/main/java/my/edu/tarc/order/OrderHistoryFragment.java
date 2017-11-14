@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,7 +32,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import my.edu.tarc.order.Objects.DataCommunication;
 import my.edu.tarc.order.Objects.Order;
 import my.edu.tarc.order.Objects.OrderHistoryAdapter;
 
@@ -45,8 +45,7 @@ public class OrderHistoryFragment extends Fragment {
     ProgressDialog progressDialog;
     RequestQueue queue;
     public static List<Order> listOrderHistory = null;
-    DataCommunication studentIdentifier;
-    public String studID = studentIdentifier.getStudID();
+    public String walletID = OrderMainActivity.getwID();
 
     public OrderHistoryFragment() {
         // Required empty public constructor
@@ -69,12 +68,38 @@ public class OrderHistoryFragment extends Fragment {
 
             String type = "retrieveOrderHistory";
             BackgroundWorker backgroundWorker = new BackgroundWorker(v.getContext());
-            backgroundWorker.execute(type,  studID);
+            backgroundWorker.execute(type,  walletID);
 
 
         } else {
             loadListing();
         }
+
+        listViewOrderHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Order chosenOrder = (Order) parent.getItemAtPosition(position);
+                int chosenOrderID = chosenOrder.getOrderID();
+                String orderDateTime = chosenOrder.getOrderDateTime();
+                String chosenProdName = chosenOrder.getProdName();
+                int chosenOrderAmount = chosenOrder.getOrderQuantity();
+                double chosenOrderTotal = chosenOrder.getPayAmount();
+                String chosenOrderStatus = chosenOrder.getOrderStatus();
+                OrderMainActivity.setOrderID(chosenOrderID);
+                OrderMainActivity.setProdName(chosenProdName);
+                OrderMainActivity.setOrderDateTime(orderDateTime);
+                OrderMainActivity.setOrderAmount(chosenOrderAmount);
+                OrderMainActivity.setOrderTotal(chosenOrderTotal);
+                OrderMainActivity.setOrderStatus(chosenOrderStatus);
+                OrderDetailFragment nextFrag= new OrderDetailFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, nextFrag,"findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         return v;
     }
 
@@ -190,9 +215,6 @@ public class OrderHistoryFragment extends Fragment {
                                     orderStatus, orderDateTime, payDateTime);
                             listOrderHistory.add(history);
                         }
-
-
-
 
                     }
 

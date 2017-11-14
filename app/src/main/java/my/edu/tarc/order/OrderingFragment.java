@@ -1,123 +1,129 @@
-package my.edu.tarc.order;
+/*package my.edu.tarc.order;
 
-import android.content.Context;
-import android.net.Uri;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
+
+import static java.lang.Integer.parseInt;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OrderingFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link OrderingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OrderingFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final String UPLOAD_URL = "https://leowwj-wa15.000webhostapp.com/add_order.php";
+    TextView textViewProductName, textViewProductDesc, textViewPrice, textViewTotal;
+    EditText editTextAmount, editTextDiscount;
+    int amount;
+    double productPrice, total;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     public OrderingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OrderingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OrderingFragment newInstance(String param1, String param2) {
-        OrderingFragment fragment = new OrderingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ordering, container, false);
+        View v = inflater.inflate(R.layout.fragment_ordering, container, false);
+        textViewProductName = v.findViewById(R.id.textViewProductName);
+        textViewProductDesc = v.findViewById(R.id.textViewProductDesc);
+        textViewPrice = v.findViewById(R.id.textViewPrice);
+        textViewProductName.setText(OrderMainActivity.getProdName());
+        textViewProductDesc.setText(OrderMainActivity.getProdDesc());
+        textViewPrice.setText(OrderMainActivity.getProdPrice() + "");
+        productPrice = OrderMainActivity.getProdPrice();
+        return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+    public void onClickOrder() {
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => "+c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String orderDT = df.format(c.getTime());
+
+        String walletID = OrderMainActivity.getwID();
+        String prodID = OrderMainActivity.getProdID();
+        String orderDateTime = orderDT;
+        String orderQtyText = editTextAmount.getText().toString();
+        int orderQuantity = parseInt(orderQtyText);
+        double payAmount = orderQuantity * OrderMainActivity.getProdPrice();
+        String discountCode = editTextDiscount.getText().toString();
+
+
+        if (TextUtils.isEmpty(orderQtyText)) {
+            editTextAmount.setError("Field cannot be empty");
+        }
+
+        else {
+            makeOrder();
+            MenuFragment.allowRefresh = true;
+
+            OrderMainActivity.listOrder = null;
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+
+    private void makeOrder() {
+        class UploadImage extends AsyncTask<Bitmap, Void, String> {
+            String ProdName = txtProdName.getText().toString();
+            String ProdCat = txtCat.getText().toString();
+            String ProdDesc = txtDesc.getText().toString();
+            String ProdPrice = txtPrice.getText().toString();
+            String ProdQuantity = txtQuantity.getText().toString();
+            String SupplierName = txtSupplier.getText().toString();
+
+            ProgressDialog loading;
+            RequestHandler rh = new RequestHandler();
+
+            protected void onPreExecute() {
+                loading = ProgressDialog.show(OrderingFragment.this.getActivity(), "Making Order", "Please wait...", true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected String doInBackground(Bitmap... params) {
+                Bitmap bitmap = params[0];
+                String ProdImage = getStringImage(bitmap);
+
+                HashMap<String, String> data = new HashMap<>();
+
+
+                data.put("ProdName", ProdName);
+                data.put("ProdCat", ProdCat);
+                data.put("ProdDesc", ProdDesc);
+                data.put("ProdPrice", ProdPrice);
+                data.put("ProdQuantity", ProdQuantity);
+                data.put("ProdImage", ProdImage);
+                data.put("MercName", Login.LOGGED_IN_USER);
+                data.put("SupplierName",SupplierName);
+
+
+
+                String result = rh.sendPostRequest(UPLOAD_URL, data);
+
+                return result;
+            }
         }
-    }
+        UploadImage ui = new UploadImage();
+        ui.execute(bitmap);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public static String getCurrentTimeStamp(){
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
-
-            return currentDateTime;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
+*/

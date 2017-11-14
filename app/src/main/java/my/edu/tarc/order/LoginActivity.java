@@ -1,34 +1,35 @@
 package my.edu.tarc.order;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     //declare variables to be used
     EditText txtWalletID, txtPassword;
-    public static String LOGGED_IN_USER = "LOGGED_IN_USER";
-    String walletID;
+    String walletID, checkPass, loginPassword, currentCard, currentCardType;
+    double balance;
+    int loyaltyPoint;
     ProgressDialog progressDialog;
 
     @Override
@@ -36,136 +37,126 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        txtWalletID = (EditText) findViewById(R.id.editTextWalletID);
-        txtPassword = (EditText) findViewById(R.id.editTextPassword);
-    }
-
-    protected void onClickButtonLogin(View v) {
-
-        walletID = txtWalletID.getText().toString();
-        String password = txtPassword.getText().toString();
-        String type = "login";
-
-        if (txtWalletID.getText().toString() == " " || txtPassword.getText().toString() == " ") {
-            Toast.makeText(getApplicationContext(), "Please fill in walletID and password", Toast.LENGTH_LONG).show();
-
-        }
+        txtWalletID = findViewById(R.id.editTextWalletID);
+        txtPassword = findViewById(R.id.editTextPassword);
 
         progressDialog = new ProgressDialog(this);
-
-        // execute backgroudWorker class to check whether the user is exist in database or not
-        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-        backgroundWorker.execute(type, walletID, password);
     }
 
-    private class BackgroundWorker extends AsyncTask<String, Void, String> {
+    public void onClickButtonLogin(View view) {
+        String LoginPassword = txtWalletID.getText().toString();
+        String WalletID = txtPassword.getText().toString();
+        if(WalletID.matches("")){
+            Toast.makeText(this, "Please fill in username.", Toast.LENGTH_SHORT).show();
+        }
+        else if(LoginPassword.matches("")){
+            Toast.makeText(this, "Please fill in password.", Toast.LENGTH_SHORT).show();
+        }
+        //checkUser(this, "https://gabriellb-wp14.000webhostapp.com/select_user.php", WalletID,LoginPassword);
+        checkUser(this, "https://martpay.000webhostapp.com/gab_select_user.php", WalletID,LoginPassword);
 
-        Context context;
-        AlertDialog alertDialog;
+    }
+
+    public void checkUser(Context context, String url, final String WalletID, final String LoginPassword) {
+        //mPostCommentResponse.requestStarted();
+        RequestQueue queue = Volley.newRequestQueue(context);
 
 
-        public BackgroundWorker(Context context) {
-            this.context = context;
+        if (!progressDialog.isShowing()){
+            progressDialog.setMessage("Logging in...");
+            progressDialog.show();
         }
 
-        @Override
-        protected String doInBackground(String... params) {
-            String type = params[0];
-            String loginURL = "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/login_wallet.php";
-
-            // if the type of the task = login
-            if (type == "login") {
-
-                String walletID = params[1];
-                String password = params[2];
-
-                try {
-
-                    //establish httpUrlConnection with POST method
-                    URL url = new URL(loginURL);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setDoInput(true);
-
-                    //set output stream
-                    OutputStream outputStream = httpURLConnection.getOutputStream();
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                    String post_data = URLEncoder.encode("WalletID", "UTF-8") + "=" + URLEncoder.encode(walletID, "UTF-8") + "&"
-                            + URLEncoder.encode("LoginPassword", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
-
-                    bufferedWriter.write(post_data);
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
-                    outputStream.close();
-
-                    // read the data
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                    String result = "";
-                    String line = "";
-
-                    while ((line = bufferedReader.readLine()) != null) {
-                        result += line;
-                    }
-                    bufferedReader.close();
-                    inputStream.close();
-                    httpURLConnection.disconnect();
-                    return result;
 
 
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        //Send data
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            JSONObject jsonObject;
+                            try {
+                                String err = "";
+                                jsonObject = new JSONObject(response);
+                                int success = jsonObject.getInt("success");
+                                String message = jsonObject.getString("message");
+                                if (success == 0) {
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                } else if (success == 1) {
+                                    checkPass = jsonObject.getString("LoginPassword");
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    if (checkPass.equals(LoginPassword)) {
+                                        walletID = WalletID;
+                                        balance = jsonObject.getDouble("Balance");
+                                        loyaltyPoint = jsonObject.getInt("LoyaltyPoint");
+                                        loginPassword = jsonObject.getString("LoginPassword");
+                                        currentCard = jsonObject.getString("CurrentCard");
+                                        currentCardType = jsonObject.getString("CurrentCardType");
+                                        Toast.makeText(getApplicationContext(), "Welcome, "+walletID+".", Toast.LENGTH_LONG).show();
+                                        goToMain();
+                                    } else {
+                                        err += "Password is incorrect.";
+                                    }
+                                } else if (success == 2) {
+                                    err+="Wallet not found.";
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                } else{
+                                    Toast.makeText(getApplicationContext(), "err", Toast.LENGTH_SHORT).show();
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                }
+                                //show error
+                                if(err.length()>0){
+                                    Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Error. " + error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("WalletID", WalletID);
+                    return params;
                 }
 
-            }
-            return null;
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
-        @Override
-        protected void onPreExecute() {
-
-            // create an dialog and set it's title
-            alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle("Login Status");
-
-            if (!progressDialog.isShowing()) ;
-            progressDialog.setMessage("Logging in");
-            progressDialog.show();
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // if login failed
-            if (result.equals("login not success")) {
-
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                alertDialog.setMessage("Login failed. Please check your username and password");
-                alertDialog.show();
-            }
-            //else allow user to login
-            else {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                LOGGED_IN_USER = walletID;
-                startActivity(intent);
-            }
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-
+    public void goToMain() {
+        Intent intent = new Intent(this, OrderMainActivity.class);
+        intent.putExtra("walletID",walletID);
+        intent.putExtra("balance",balance);
+        intent.putExtra("loyaltyPoint",loyaltyPoint);
+        intent.putExtra("loginPassword",loginPassword);
+        intent.putExtra("currentCard",currentCard);
+        intent.putExtra("currentCardType",currentCardType);
+        startActivity(intent);
     }
 
 }

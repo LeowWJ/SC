@@ -31,9 +31,9 @@ import java.util.Map;
 
 public class OrderDetailFragment extends Fragment {
 
-    Button buttonCancelOrder, buttonPay;
+    Button buttonCancelOrder, buttonRedeem;
     TextView textViewOrderID, textViewProductName, textViewPayment, textViewPaymentStatus, textViewOrderDateTime;
-    Integer orderID = MainActivity.OrderDetail.getOrderID();
+    Integer orderID = OrderMainActivity.getOrderID();
     String oID = orderID.toString();
     final String TAG = "OrderID";
 
@@ -48,11 +48,20 @@ public class OrderDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_order_detail, container, false);
-        int orderID = MainActivity.OrderDetail.getOrderID();
-        String prodName = MainActivity.OrderDetail.getProdName();
-        double total = MainActivity.OrderDetail.getPayAmount();
-        String status = MainActivity.OrderDetail.getOrderStatus();
-        String orderDateTime = MainActivity.OrderDetail.getOrderDateTime();
+        int orderID = OrderMainActivity.getOrderID();
+        String prodName = OrderMainActivity.getProdName();
+        double total = OrderMainActivity.getOrderTotal();
+        String status = OrderMainActivity.getOrderStatus();
+        String orderDateTime = OrderMainActivity.getOrderDateTime();
+
+        buttonCancelOrder = v.findViewById(R.id.buttonCancelOrder);
+        buttonRedeem = v.findViewById(R.id.buttonRedeemOrder);
+        textViewOrderID = v.findViewById(R.id.textViewOrderID);
+        textViewProductName = v.findViewById(R.id.textViewProductName);
+        textViewPayment = v.findViewById(R.id.textViewPayment);
+        textViewPaymentStatus = v.findViewById(R.id.textViewPaymentStatus);
+        textViewOrderDateTime = v.findViewById(R.id.textViewOrderDateTime);
+
         textViewOrderID.setText(orderID);
         textViewProductName.setText(prodName);
         textViewPayment.setText(total + " ");
@@ -60,7 +69,7 @@ public class OrderDetailFragment extends Fragment {
         textViewPaymentStatus.setText(status);
         if (status == "Completed" || status == "Cancelled"){
             buttonCancelOrder.setVisibility(View.INVISIBLE);
-            buttonPay.setVisibility(View.INVISIBLE);
+            buttonRedeem.setVisibility(View.INVISIBLE);
         }
 
         buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +85,7 @@ public class OrderDetailFragment extends Fragment {
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                        updateStatus(view.getContext(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/update_name.php");
+                                        updateStatus(view.getContext(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/cancelOrder.php");
                                 }
                             });
 
@@ -89,10 +98,10 @@ public class OrderDetailFragment extends Fragment {
                 }
             });
 
-        buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
+        buttonRedeem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // add this, your class to the bracket, not sure the syntax correct or not
+                // add this, your class to the bracket of the intent initializer, not sure the syntax correct or not
                 Intent intent = new Intent();
                 intent.putExtra(TAG,oID);
                 startActivity(intent);

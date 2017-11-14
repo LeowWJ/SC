@@ -10,24 +10,28 @@
         android:id="@+id/textViewOrderDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/orderDateTime" />
+        android:text="@string/orderDateTime"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
     <TextView
         android:id="@+id/textViewAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/amount" />
+        android:text="@string/amount"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
     <TextView
         android:id="@+id/textViewTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/total" />
+        android:text="@string/total"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
     <TextView
         android:id="@+id/textViewStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/status" />
+        android:text="@string/status"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
 </LinearLayout>

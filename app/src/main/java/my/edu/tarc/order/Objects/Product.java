@@ -7,10 +7,13 @@ package my.edu.tarc.order.Objects;
 public class Product {
     private String ProdID;
     private String ProdName;
+    private String ProdCat;
     private String ProdDesc;
     private double Price;
+    private int  Quantity;
     private String ImageURL;
     private String MercName;
+    private String SupplierName;
 
 
 
@@ -21,12 +24,16 @@ public class Product {
 
 
 
-    public Product (String ProdID, String ProdName,String ProdDesc,Double Price,String ImageURL){
+    public Product (String ProdID, String ProdName,String ProdCat,String ProdDesc,Double Price,String SupplierName, String ImageURL){
         this.setProdName(ProdName);
+        this.setProdCat(ProdCat);
         this.setProdDesc(ProdDesc);
         this.setPrice(Price);
+        this.setSupplierName(SupplierName);
         this.setImageURL(ImageURL);
         this.setProdID(ProdID);
+
+
     }
 
 
@@ -36,6 +43,14 @@ public class Product {
 
     public void setProdName(String prodName) {
         ProdName = prodName;
+    }
+
+    public String getProdCat() {
+        return ProdCat;
+    }
+
+    public void setProdCat(String prodCat) {
+        ProdCat = prodCat;
     }
 
     public String getProdDesc() {
@@ -52,6 +67,14 @@ public class Product {
 
     public void setPrice(double price) {
         Price = price;
+    }
+
+    public int getQuantity() {
+        return Quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        Quantity = quantity;
     }
 
     public String getImageURL() {
@@ -78,5 +101,12 @@ public class Product {
         MercName = mercName;
     }
 
+    public String getSupplierName() {
+        return SupplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        SupplierName = supplierName;
+    }
 
 }

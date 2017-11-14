@@ -29,10 +29,11 @@
     <string name="applyCode">Apply Code</string>
     <string name="discountCode">Discount Code</string>
     <string name="productName">Product Name:</string>
-    <string name="price">Price:</string>
+    <string name="price">Price (RM):</string>
     <string name="orderDateTime">Order Date Time:</string>
     <string name="total">Total (RM):</string>
     <string name="status">Status: </string>
     <string name="productDescription">Product Description:</string>
     <string name="orderID">Order ID</string>
+    <string name="redeemOrder">Redeem My Order</string>
 </resources>
