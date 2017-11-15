@@ -40,9 +40,9 @@ public class MenuAdapter extends ArrayAdapter<Product> {
         TextView textViewProductName, textViewPrice;
         ImageView imageViewProduct;
 
-        textViewProductName = (TextView) gridView.findViewById(R.id.textViewProductName);
-        textViewPrice = (TextView) gridView.findViewById(R.id.textViewPrice);
-        imageViewProduct = (ImageView) gridView.findViewById(R.id.imageViewProduct);
+        textViewProductName = gridView.findViewById(R.id.textViewProductName);
+        textViewPrice = gridView.findViewById(R.id.textViewPrice);
+        imageViewProduct = gridView.findViewById(R.id.imageViewProduct);
 
         if (grid != null) {
             textViewProductName.setText(textViewProductName.getText() + ":  " + grid.getProdName());

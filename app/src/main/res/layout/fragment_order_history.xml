@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="my.edu.tarc.order.OrderHistoryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:id="@+id/listViewOrderHistory"
         android:layout_width="match_parent"

@@ -36,4 +36,14 @@
     <string name="productDescription">Product Description:</string>
     <string name="orderID">Order ID</string>
     <string name="redeemOrder">Redeem My Order</string>
+    <string name="stall1">Stall 1</string>
+    <string name="stall2">Stall 2</string>
+    <string name="stall3">Stall 3</string>
+    <string name="stall4">Stall 4</string>
+    <string name="stall5">Stall 5</string>
+    <string name="stall6">Stall 6</string>
+    <string name="stall7">Stall 7</string>
+    <string name="stall8">Stall 8</string>
+    <string name="stall9">Stall 9</string>
+    <string name="mercTest">lai</string>
 </resources>

@@ -67,7 +67,7 @@ public class MenuFragment extends Fragment {
 
         if(OrderMainActivity.listMenu == null){
             OrderMainActivity.listMenu = new ArrayList<>();
-            String type = "retrieveMenu";
+            String type = "retrieveProduct";
             BackgroundWorker backgroundWorker = new BackgroundWorker(v.getContext());
             backgroundWorker.execute(type,  MercName);
         }
@@ -87,8 +87,8 @@ public class MenuFragment extends Fragment {
                 OrderMainActivity.setProdName(chosenProdName);
                 OrderMainActivity.setProdDesc(chosenProdDesc);
                 OrderMainActivity.setProdPrice(chosenProdPrice);
-                //OrderingFragment nextFrag= new OrderingFragment();
-                /*getActivity().getSupportFragmentManager().beginTransaction()
+                /*OrderingFragment nextFrag= new OrderingFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.content, nextFrag,"findThisFragment")
                         .addToBackStack(null)
                         .commit();*/
@@ -117,16 +117,16 @@ public class MenuFragment extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             String type = params[0];
-            String borrowURL = "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/getMenuItem.php";
+            String RetrieveURL = "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/getlist.php";
 
             // if the type of the task = retrieveBorrowHistory
-            if (type == "retrieveMenu") {
+            if (type == "retrieveProduct") {
                 String MercName = params[1];
 
                 try {
 
                     //establish httpUrlConnection with POST method
-                    URL url = new URL(borrowURL);
+                    URL url = new URL(RetrieveURL);
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -170,12 +170,10 @@ public class MenuFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-
-            if (!progressDialog.isShowing()) {
-                progressDialog.setMessage("Retrieving Menu List");
-                progressDialog.show();
-            };
-
+/*
+            if (!progressDialog.isShowing()) ;
+            progressDialog.setMessage("Retrieving Product");
+            progressDialog.show();*/
 
 
         }
@@ -187,28 +185,33 @@ public class MenuFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(result);
 
                 try {
+
                     OrderMainActivity.listMenu.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject courseResponse= (JSONObject) jsonArray.get(i);
+
+
 
                         String ProdID = courseResponse.getString("ProdID");
                         String ProdName = courseResponse.getString("ProdName");
                         String ProdCat = courseResponse.getString("ProdCat");
                         String ProdDesc = courseResponse.getString("ProdDesc");
                         double ProdPrice = Double.parseDouble(courseResponse.getString("ProdPrice"));
-                        String SupplierName = courseResponse.getString("SupplierName");
                         String ImageURL = courseResponse.getString("url");
 
-                        Product menuItem = new Product(ProdID, ProdName, ProdCat, ProdDesc,
-                                ProdPrice,SupplierName ,ImageURL);
-                        OrderMainActivity.listMenu.add(menuItem);
+
+                        Product listing = new Product(ProdID, ProdName, ProdCat, ProdDesc, ProdPrice ,ImageURL);
+                        OrderMainActivity.listMenu.add(listing);
 
                     }
 
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
+                    /*if (progressDialog.isShowing())
+                        progressDialog.dismiss();*/
 
                     loadListing();
+                    Toast.makeText(getView().getContext(), "", Toast.LENGTH_LONG).show();
+
+
 
                 } catch (Exception e) {
                     Toast.makeText(getView().getContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -224,6 +227,7 @@ public class MenuFragment extends Fragment {
             super.onProgressUpdate(values);
         }
 
+
     }
 
     public void onDestroyView() {
@@ -231,7 +235,7 @@ public class MenuFragment extends Fragment {
         if (queue != null) {
             queue.cancelAll(TAG);
         }
-
+        OrderMainActivity.listMenu = null;
     }
 }
 

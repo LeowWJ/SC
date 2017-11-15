@@ -44,8 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClickButtonLogin(View view) {
-        String LoginPassword = txtWalletID.getText().toString();
-        String WalletID = txtPassword.getText().toString();
+        String LoginPassword = txtPassword.getText().toString();
+        String WalletID = txtWalletID.getText().toString();
         if(WalletID.matches("")){
             Toast.makeText(this, "Please fill in username.", Toast.LENGTH_SHORT).show();
         }

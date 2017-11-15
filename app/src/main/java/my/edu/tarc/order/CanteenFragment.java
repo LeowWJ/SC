@@ -42,7 +42,7 @@ public class CanteenFragment extends Fragment {
                 OrderMainActivity.setCanteen("Red Bricks Cafeteria");
                 StallFragment nextFrag= new StallFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content, nextFrag,"findThisFragment")
+                        .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                         .addToBackStack(null)
                         .commit();
             }
@@ -77,6 +77,9 @@ public class CanteenFragment extends Fragment {
         return v;
     }
 
-
+    public static CanteenFragment newInstance() {
+        CanteenFragment fragment = new CanteenFragment();
+        return fragment;
+    }
 
 }

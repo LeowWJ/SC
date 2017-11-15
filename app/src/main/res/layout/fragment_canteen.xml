@@ -5,14 +5,13 @@
     android:layout_height="match_parent"
     tools:context="my.edu.tarc.order.CanteenFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <Button
             android:id="@+id/buttonCanteen1"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -25,6 +24,7 @@
 
         <Button
             android:id="@+id/buttonCanteen2"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -37,6 +37,7 @@
 
         <Button
             android:id="@+id/buttonCanteen3"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -49,6 +50,7 @@
 
         <Button
             android:id="@+id/buttonCanteen4"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="128dp"

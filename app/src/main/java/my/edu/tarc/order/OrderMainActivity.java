@@ -1,9 +1,9 @@
 package my.edu.tarc.order;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -33,11 +33,11 @@ public class OrderMainActivity extends AppCompatActivity{
             switch (item.getItemId()) {
                 case R.id.navigation_order:
                     CanteenFragment canteenFragment = new CanteenFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,canteenFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameOrderMain,canteenFragment).commit();
                     break;
                 case R.id.navigation_orderHistory:
                     OrderHistoryFragment orderHistoryFragment = new OrderHistoryFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,orderHistoryFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameOrderMain,orderHistoryFragment).commit();
                     break;
             }
             return false;
@@ -47,7 +47,7 @@ public class OrderMainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_order_main);
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -57,9 +57,15 @@ public class OrderMainActivity extends AppCompatActivity{
         walletID = extras.getString("walletID");
         walletBal = extras.getDouble("balance", 0);
         loyaltyPoint = extras.getInt("loyaltyPoint",0);
-        mTextMessage = findViewById(R.id.message);
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameOrderMain, CanteenFragment.newInstance());
+        transaction.commit();
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
     }
 
     public static String getCanteen() {

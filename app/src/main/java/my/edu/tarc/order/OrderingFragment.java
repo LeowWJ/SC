@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ public class OrderingFragment extends Fragment {
     EditText editTextAmount, editTextDiscount;
     int amount;
     double productPrice, total;
+    Button buttonOrder, buttonApply;
+    boolean ticketApplied;
 
 
     public OrderingFragment() {
@@ -37,42 +40,61 @@ public class OrderingFragment extends Fragment {
         textViewProductName = v.findViewById(R.id.textViewProductName);
         textViewProductDesc = v.findViewById(R.id.textViewProductDesc);
         textViewPrice = v.findViewById(R.id.textViewPrice);
+        textViewTotal = v.findViewById(R.id.textViewTotal);
         textViewProductName.setText(OrderMainActivity.getProdName());
         textViewProductDesc.setText(OrderMainActivity.getProdDesc());
         textViewPrice.setText(OrderMainActivity.getProdPrice() + "");
         productPrice = OrderMainActivity.getProdPrice();
+        buttonOrder = v.findViewById(R.id.buttonOrder);
+        buttonApply = v.findViewById(R.id.buttonApplyCode);
+        buttonOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar c = Calendar.getInstance();
+                System.out.println("Current time => "+c.getTime());
+
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String orderDT = df.format(c.getTime());
+
+                String walletID = OrderMainActivity.getwID();
+                String prodID = OrderMainActivity.getProdID();
+                String orderDateTime = orderDT;
+                String orderQtyText = editTextAmount.getText().toString();
+                int orderQuantity = parseInt(orderQtyText);
+                double payAmount = orderQuantity * OrderMainActivity.getProdPrice();
+                String discountCode = editTextDiscount.getText().toString();
+
+                if (TextUtils.isEmpty(orderQtyText)) {
+                    editTextAmount.setError("Field cannot be empty");
+                }
+
+                else {
+                    makeOrder();
+                    MenuFragment.allowRefresh = true;
+                    OrderMainActivity.listOrder = null;
+                }
+            }
+        });
+
+        buttonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String discountCode = editTextDiscount.getText().toString();
+
+                if (TextUtils.isEmpty(discountCode)) {
+                    editTextAmount.setError("Field cannot be empty");
+                }
+
+                else {
+                    ticketApplied = checkEligibilty(discountCode);
+                    MenuFragment.allowRefresh = true;
+                    OrderMainActivity.listOrder = null;
+                }
+            }
+        });
+
         return v;
     }
-
-
-    public void onClickOrder() {
-        Calendar c = Calendar.getInstance();
-        System.out.println("Current time => "+c.getTime());
-
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String orderDT = df.format(c.getTime());
-
-        String walletID = OrderMainActivity.getwID();
-        String prodID = OrderMainActivity.getProdID();
-        String orderDateTime = orderDT;
-        String orderQtyText = editTextAmount.getText().toString();
-        int orderQuantity = parseInt(orderQtyText);
-        double payAmount = orderQuantity * OrderMainActivity.getProdPrice();
-        String discountCode = editTextDiscount.getText().toString();
-
-
-        if (TextUtils.isEmpty(orderQtyText)) {
-            editTextAmount.setError("Field cannot be empty");
-        }
-
-        else {
-            makeOrder();
-            MenuFragment.allowRefresh = true;
-
-            OrderMainActivity.listOrder = null;
-        }
-    }
-
 
     private void makeOrder() {
         class UploadImage extends AsyncTask<Bitmap, Void, String> {
@@ -124,6 +146,12 @@ public class OrderingFragment extends Fragment {
         UploadImage ui = new UploadImage();
         ui.execute(bitmap);
 
+    }
+
+    private boolean checkEligibilty(String couponCode){
+        boolean result;
+
+        return result;
     }
 }
 */

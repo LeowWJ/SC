@@ -25,39 +25,52 @@ public class StallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_canteen, container, false);
+        View v =  inflater.inflate(R.layout.fragment_stall, container, false);
         allowRefresh = false;
 
-        buttonStall1 = (Button)v.findViewById(R.id.buttonStall1);
-        buttonStall2 = (Button)v.findViewById(R.id.buttonStall2);
-        buttonStall3 = (Button)v.findViewById(R.id.buttonStall3);
-        buttonStall4 = (Button)v.findViewById(R.id.buttonStall4);
-        buttonStall5 = (Button)v.findViewById(R.id.buttonStall5);
-        buttonStall6 = (Button)v.findViewById(R.id.buttonStall6);
-        buttonStall7 = (Button)v.findViewById(R.id.buttonStall7);
-        buttonStall8 = (Button)v.findViewById(R.id.buttonStall8);
-        buttonStall9 = (Button)v.findViewById(R.id.buttonStall9);
+        buttonStall1 = v.findViewById(R.id.buttonStall1);
+        buttonStall2 = v.findViewById(R.id.buttonStall2);
+        buttonStall3 = v.findViewById(R.id.buttonStall3);
+        buttonStall4 = v.findViewById(R.id.buttonStall4);
+        buttonStall5 = v.findViewById(R.id.buttonStall5);
+        buttonStall6 = v.findViewById(R.id.buttonStall6);
+        buttonStall7 = v.findViewById(R.id.buttonStall7);
+        buttonStall8 = v.findViewById(R.id.buttonStall8);
+        buttonStall9 = v.findViewById(R.id.buttonStall9);
 
         switch (canteenChoice){
             case "Red Bricks Cafeteria":
-                buttonStall1.setText("@string/convenienceStore");
-                buttonStall2.setText("@string/mixedRice");
-                buttonStall3.setText("@string/masakanMalaysia");
-                buttonStall4.setText("@string/noodles");
-                buttonStall5.setText("@string/fresh");
-                buttonStall6.setText("@string/indoDeli");
-                buttonStall7.setText("@string/vegetarianFood");
-                buttonStall8.setText("@string/monsterCafe");
-                buttonStall9.setVisibility(View.INVISIBLE);
-                buttonStall9.setClickable(false);
+                buttonStall1.setText(R.string.convenienceStore);
+                buttonStall2.setText(R.string.mixedRice);
+                buttonStall3.setText(R.string.masakanMalaysia);
+                buttonStall4.setText(R.string.noodles);
+                buttonStall5.setText(R.string.fresh);
+                buttonStall6.setText(R.string.indoDeli);
+                buttonStall7.setText(R.string.vegetarianFood);
+                buttonStall8.setText(R.string.monsterCafe);
+                buttonStall9.setText(R.string.mercTest);
+                /*buttonStall9.setVisibility(View.INVISIBLE);
+                buttonStall9.setClickable(false);*/
+
+                buttonStall9.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OrderMainActivity.setStall("lai");
+                        MenuFragment nextFrag= new MenuFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
 
                 buttonStall1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OrderMainActivity.setStall("Convenience Store");
+                        OrderMainActivity.setStall("Canteen 1 Convenience Store");
                         MenuFragment nextFrag= new MenuFragment();
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.content, nextFrag,"findThisFragment")
+                                .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                                 .addToBackStack(null)
                                 .commit();
                     }
