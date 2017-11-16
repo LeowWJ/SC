@@ -38,13 +38,11 @@ import my.edu.tarc.order.Objects.OrderHistoryAdapter;
 
 public class OrderHistoryFragment extends Fragment {
     public static boolean allowRefresh;
-    public static final String TAG = "com.example.user.myApp";
+    public static final String TAG = "my.edu.tarc.order";
 
-    ListView listViewOrderHistory = null;
-    int OrderID;
+    ListView listViewOrderHistory;
     ProgressDialog progressDialog;
     RequestQueue queue;
-    public static List<Order> listOrderHistory = null;
     public String walletID = OrderMainActivity.getwID();
 
     public OrderHistoryFragment() {
@@ -62,9 +60,9 @@ public class OrderHistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_order_history, container, false);
         allowRefresh = false;
-        listViewOrderHistory = (ListView)v.findViewById(R.id.listViewOrderHistory);
-        if (listOrderHistory == null) {
-            listOrderHistory = new ArrayList<>();
+        listViewOrderHistory = v.findViewById(R.id.listViewOrderHistory);
+        if (OrderMainActivity.listOrder == null) {
+            OrderMainActivity.listOrder = new ArrayList<>();
 
             String type = "retrieveOrderHistory";
             BackgroundWorker backgroundWorker = new BackgroundWorker(v.getContext());
@@ -75,7 +73,7 @@ public class OrderHistoryFragment extends Fragment {
             loadListing();
         }
 
-        listViewOrderHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listViewOrderHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
@@ -98,13 +96,13 @@ public class OrderHistoryFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             }
-        });
+        });*/
 
         return v;
     }
 
     private void loadListing() {
-        final OrderHistoryAdapter adapter = new OrderHistoryAdapter(getActivity(), R.layout.fragment_menu, listOrderHistory);
+        final OrderHistoryAdapter adapter = new OrderHistoryAdapter(getActivity(), R.layout.fragment_menu, OrderMainActivity.listOrder);
         listViewOrderHistory.setAdapter(adapter);
 
     }
@@ -127,7 +125,7 @@ public class OrderHistoryFragment extends Fragment {
 
             // if the type of the task = retrieveBorrowHistory
             if (type == "retrieveOrderHistory") {
-                String StudID = params[1];
+                String walletID = params[1];
 
                 try {
 
@@ -141,7 +139,7 @@ public class OrderHistoryFragment extends Fragment {
                     //set output stream
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                    String post_data = URLEncoder.encode("StudID", "UTF-8") + "=" + URLEncoder.encode(StudID, "UTF-8");
+                    String post_data = URLEncoder.encode("StudID", "UTF-8") + "=" + URLEncoder.encode(walletID, "UTF-8");
 
                     bufferedWriter.write(post_data);
                     bufferedWriter.flush();
@@ -177,10 +175,9 @@ public class OrderHistoryFragment extends Fragment {
         @Override
         protected void onPreExecute() {
 
-            if (!progressDialog.isShowing()) ;
+/*            if (!progressDialog.isShowing()) ;
             progressDialog.setMessage("Retrieving Order History");
-            progressDialog.show();
-
+            progressDialog.show();*/
 
         }
 
@@ -191,29 +188,26 @@ public class OrderHistoryFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(result);
 
                 try {
-                    listOrderHistory.clear();
+                    OrderMainActivity.listOrder.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject courseResponse= (JSONObject) jsonArray.get(i);
 
-
-
                         int orderID = courseResponse.getInt("OrderID");
-                        String prodName = courseResponse.getString("ProdName");
+                        int prodID = courseResponse.getInt("ProdID");
                         String orderDateTime = courseResponse.getString("OrderDateTime");
                         int orderQuantity = courseResponse.getInt("OrderQuantity");
                         String orderStatus = courseResponse.getString("OrderStatus");
                         double payAmount = courseResponse.getDouble("PayAmount");
                         String payDateTime = courseResponse.getString("PayDateTime");
+                        String prodName = courseResponse.getString("ProdName");
 
-                        if (orderStatus == "Pending" || orderStatus == "Cancelled"){
-                            Order history = new Order(orderID, prodName, orderQuantity, payAmount,
-                                    orderStatus, orderDateTime);
-                            listOrderHistory.add(history);
+                        if (orderStatus == "Paid" || orderStatus == "Cancelled"){
+                            Order history = new Order(orderID, walletID, prodID, prodName, orderDateTime, orderQuantity, orderStatus, payAmount, null);
+                            OrderMainActivity.listOrder.add(history);
                         }
                         else{
-                            Order history = new Order(orderID, prodName, orderQuantity, payAmount,
-                                    orderStatus, orderDateTime, payDateTime);
-                            listOrderHistory.add(history);
+                            Order history = new Order(orderID, walletID, prodID, prodName, orderDateTime, orderQuantity, orderStatus, payAmount, payDateTime);
+                            OrderMainActivity.listOrder.add(history);
                         }
 
                     }

@@ -170,9 +170,8 @@ public class MenuFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-/*
-            if (!progressDialog.isShowing()) ;
-            progressDialog.setMessage("Retrieving Product");
+/*            if (!progressDialog.isShowing()) ;
+            progressDialog.setMessage("Retrieving Menu Item");
             progressDialog.show();*/
 
 

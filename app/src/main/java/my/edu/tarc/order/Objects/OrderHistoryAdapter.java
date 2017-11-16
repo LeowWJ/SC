@@ -32,10 +32,10 @@ public class OrderHistoryAdapter extends ArrayAdapter<Order> {
 
         TextView textViewOrderDate, textViewAmount, textViewTotal, textViewStatus;
 
-        textViewOrderDate = (TextView) listView.findViewById(R.id.textViewOrderDate);
-        textViewAmount = (TextView) listView.findViewById(R.id.textViewAmount);
-        textViewTotal = (TextView) listView.findViewById(R.id.textViewTotal);
-        textViewStatus = (TextView) listView.findViewById(R.id.textViewStatus);
+        textViewOrderDate = listView.findViewById(R.id.textViewOrderDate);
+        textViewAmount = listView.findViewById(R.id.textViewAmount);
+        textViewTotal = listView.findViewById(R.id.textViewTotal);
+        textViewStatus = listView.findViewById(R.id.textViewStatus);
 
         textViewOrderDate.setText(textViewOrderDate.getText() + " " + list.getOrderDateTime());
         textViewAmount.setText(textViewAmount.getText() + " " + list.getOrderQuantity());

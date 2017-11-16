@@ -1,6 +1,10 @@
 /*package my.edu.tarc.order;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -10,21 +14,38 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 
 
 public class OrderingFragment extends Fragment {
     public static final String UPLOAD_URL = "https://leowwj-wa15.000webhostapp.com/add_order.php";
+    String walletID = OrderMainActivity.getwID();
     TextView textViewProductName, textViewProductDesc, textViewPrice, textViewTotal;
     EditText editTextAmount, editTextDiscount;
-    int amount;
     double productPrice, total;
     Button buttonOrder, buttonApply;
     boolean ticketApplied;
+    String orderDT;
+    ProgressDialog progressDialog;
+
 
 
     public OrderingFragment() {
@@ -45,38 +66,63 @@ public class OrderingFragment extends Fragment {
         textViewProductDesc.setText(OrderMainActivity.getProdDesc());
         textViewPrice.setText(OrderMainActivity.getProdPrice() + "");
         productPrice = OrderMainActivity.getProdPrice();
+
+
+        String prodID = OrderMainActivity.getProdID();
+        total = 0;
+
         buttonOrder = v.findViewById(R.id.buttonOrder);
         buttonApply = v.findViewById(R.id.buttonApplyCode);
+
         buttonOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
-                System.out.println("Current time => "+c.getTime());
-
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String orderDT = df.format(c.getTime());
-
-                String walletID = OrderMainActivity.getwID();
-                String prodID = OrderMainActivity.getProdID();
-                String orderDateTime = orderDT;
+                orderDT = df.format(c.getTime());
                 String orderQtyText = editTextAmount.getText().toString();
-                int orderQuantity = parseInt(orderQtyText);
-                double payAmount = orderQuantity * OrderMainActivity.getProdPrice();
-                String discountCode = editTextDiscount.getText().toString();
+                int orderQuantity = 0;
+                try{
+                    orderQuantity = parseInt(orderQtyText);
+                }
+                catch(Exception e){
+                    editTextAmount.setError("Only integer values are allowed.");
+                }
+
 
                 if (TextUtils.isEmpty(orderQtyText)) {
                     editTextAmount.setError("Field cannot be empty");
                 }
-
+                else if (orderQuantity <= 0){
+                    editTextAmount.setError("Minimum 1 order shall be made to proceed.");
+                }
                 else {
-                    makeOrder();
-                    MenuFragment.allowRefresh = true;
-                    OrderMainActivity.listOrder = null;
+                    total = orderQuantity * productPrice;
+                    final AlertDialog.Builder confirmation = new AlertDialog.Builder(getActivity());
+                    confirmation.setCancelable(false);
+                    confirmation.setTitle("Amount To Be Paid");
+                    confirmation.setPositiveButton("Pay",new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    makeOrder();
+                                    OrderMainActivity.listOrder = null;
+                                }
+                            });
+                    confirmation.setNegativeButton("Back to Ordering",new DialogInterface.OnClickListener(){
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    confirmation.show();
                 }
             }
         });
 
         buttonApply.setOnClickListener(new View.OnClickListener() {
+
+            String discountCode = editTextDiscount.getText().toString();
             @Override
             public void onClick(View view) {
                 String discountCode = editTextDiscount.getText().toString();
@@ -86,9 +132,7 @@ public class OrderingFragment extends Fragment {
                 }
 
                 else {
-                    ticketApplied = checkEligibilty(discountCode);
-                    MenuFragment.allowRefresh = true;
-                    OrderMainActivity.listOrder = null;
+                    ticketApplied = checkEligibilty(discountCode, walletID);
                 }
             }
         });
@@ -148,10 +192,5 @@ public class OrderingFragment extends Fragment {
 
     }
 
-    private boolean checkEligibilty(String couponCode){
-        boolean result;
 
-        return result;
-    }
-}
-*/
+}*/

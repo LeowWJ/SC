@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class Order {
     private int orderID;
     private String walletID;
-    private String prodID;
+    private int prodID;
     private String prodName;
     private String orderDateTime;
     private int orderQuantity;
@@ -21,46 +21,12 @@ public class Order {
 
     }
 
-    public Order(String walletID, String prodID, String orderDateTime, int orderQuantity,
-                 double payAmount){
-        this.setWalletID(walletID);
-        this.setProdID(prodID);
-        this.setOrderDateTime(orderDateTime);
-        this.setOrderQuantity(orderQuantity);
-        this.setOrderStatus("pending");
-        this.setPayAmount(payAmount);
-        this.setPayDateTime(null);
-    }
-
-    public Order(int orderID, String prodName, int orderQuantity, double payAmount,
-                 String orderStatus, String orderDateTime){
-        this.setOrderID(orderID);
-        this.setWalletID(walletID);
-        this.setProdName(prodName);
-        this.setOrderDateTime(orderDateTime);
-        this.setOrderQuantity(orderQuantity);
-        this.setOrderStatus(orderStatus);
-        this.setPayAmount(payAmount);
-        this.setPayDateTime(null);
-    }
-
-    public Order(int orderID, String prodName, int orderQuantity, double payAmount,
-                 String orderStatus, String orderDateTime, String payDateTime){
-        this.setOrderID(orderID);
-        this.setWalletID(walletID);
-        this.setProdName(prodName);
-        this.setOrderDateTime(orderDateTime);
-        this.setOrderQuantity(orderQuantity);
-        this.setOrderStatus(orderStatus);
-        this.setPayAmount(payAmount);
-        this.setPayDateTime(payDateTime);
-    }
-
-    public Order(int orderID, String walletID, String prodID, String orderDateTime,
+    public Order(int orderID, String walletID, int prodID, String prodName, String orderDateTime,
                  int orderQuantity, String orderStatus, double payAmount, String payDateTime){
         this.setOrderID(orderID);
         this.setWalletID(walletID);
         this.setProdID(prodID);
+        this.setProdName(prodName);
         this.setOrderDateTime(orderDateTime);
         this.setOrderQuantity(orderQuantity);
         this.setOrderStatus(orderStatus);
@@ -85,11 +51,11 @@ public class Order {
         this.walletID = walletID;
     }
 
-    public String getProdID() {
+    public int getProdID() {
         return prodID;
     }
 
-    public void setProdID(String prodID) {
+    public void setProdID(int prodID) {
         this.prodID = prodID;
     }
 

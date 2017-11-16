@@ -93,7 +93,7 @@ public class OrderDetailFragment extends Fragment {
                     dialog.show();
                     MenuFragment.allowRefresh = true;
 
-                    OrderHistoryFragment.listOrderHistory = null;
+                    OrderMainActivity.listOrder = null;
 
                 }
             });
