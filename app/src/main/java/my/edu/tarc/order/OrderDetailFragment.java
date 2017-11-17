@@ -67,9 +67,9 @@ public class OrderDetailFragment extends Fragment {
         textViewPayment.setText(total + " ");
         textViewOrderDateTime.setText(orderDateTime);
         textViewPaymentStatus.setText(status);
-        if (textViewPaymentStatus.getText().toString() != "Completed" || textViewPaymentStatus.getText().toString() != "Cancelled") {
-            buttonCancelOrder.setVisibility(buttonCancelOrder.VISIBLE);
-            buttonRedeem.setVisibility(buttonRedeem.VISIBLE);
+        if (textViewPaymentStatus.getText().toString() == "Paid") {
+            buttonCancelOrder.setVisibility(Button.VISIBLE);
+            buttonRedeem.setVisibility(Button.VISIBLE);
         }
 
         buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
