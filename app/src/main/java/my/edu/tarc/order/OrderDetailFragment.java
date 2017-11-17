@@ -100,7 +100,7 @@ public class OrderDetailFragment extends Fragment {
         buttonRedeem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // add this, your class to the bracket of the intent initializer, not sure the syntax correct or not
+                // add this, your class to the bracket of the intent initialization
                 Intent intent = new Intent();
                 intent.putExtra(TAG, oID);
                 startActivity(intent);
