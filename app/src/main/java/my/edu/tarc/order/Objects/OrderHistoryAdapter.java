@@ -30,13 +30,17 @@ public class OrderHistoryAdapter extends ArrayAdapter<Order> {
 
         View listView = inflater.inflate(R.layout.order_history_layout, parent, false);
 
-        TextView textViewOrderDate, textViewAmount, textViewTotal, textViewStatus;
+        TextView textViewProdName,textViewOrderDate, textViewAmount, textViewTotal, textViewStatus, textViewOrderID;
 
+        textViewOrderID = listView.findViewById(R.id.textViewOrder);
+        textViewProdName = listView.findViewById(R.id.textViewProdName);
         textViewOrderDate = listView.findViewById(R.id.textViewOrderDate);
         textViewAmount = listView.findViewById(R.id.textViewAmount);
         textViewTotal = listView.findViewById(R.id.textViewTotal);
         textViewStatus = listView.findViewById(R.id.textViewStatus);
 
+        textViewOrderID.setText(textViewOrderID.getText() + ": " + list.getOrderID());
+        textViewProdName.setText(textViewProdName.getText() + " " + list.getProdName());
         textViewOrderDate.setText(textViewOrderDate.getText() + " " + list.getOrderDateTime());
         textViewAmount.setText(textViewAmount.getText() + " " + list.getOrderQuantity());
         textViewTotal.setText(textViewTotal.getText() + " RM " + list.getPayAmount());

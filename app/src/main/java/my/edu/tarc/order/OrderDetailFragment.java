@@ -47,7 +47,7 @@ public class OrderDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.fragment_order_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_order_detail, container, false);
         int orderID = OrderMainActivity.getOrderID();
         String prodName = OrderMainActivity.getProdName();
         double total = OrderMainActivity.getOrderTotal();
@@ -56,54 +56,53 @@ public class OrderDetailFragment extends Fragment {
 
         buttonCancelOrder = v.findViewById(R.id.buttonCancelOrder);
         buttonRedeem = v.findViewById(R.id.buttonRedeemOrder);
-        textViewOrderID = v.findViewById(R.id.textViewOrderID);
+        textViewOrderID = v.findViewById(R.id.textViewOrder);
         textViewProductName = v.findViewById(R.id.textViewProductName);
         textViewPayment = v.findViewById(R.id.textViewPayment);
         textViewPaymentStatus = v.findViewById(R.id.textViewPaymentStatus);
         textViewOrderDateTime = v.findViewById(R.id.textViewOrderDateTime);
 
-        textViewOrderID.setText(orderID);
+        textViewOrderID.setText(orderID + " ");
         textViewProductName.setText(prodName);
         textViewPayment.setText(total + " ");
         textViewOrderDateTime.setText(orderDateTime);
         textViewPaymentStatus.setText(status);
-        if (status == "Completed" || status == "Cancelled"){
-            buttonCancelOrder.setVisibility(View.INVISIBLE);
-            buttonRedeem.setVisibility(View.INVISIBLE);
+        if (textViewPaymentStatus.getText().toString() != "Completed" || textViewPaymentStatus.getText().toString() != "Cancelled") {
+            buttonCancelOrder.setVisibility(buttonCancelOrder.VISIBLE);
+            buttonRedeem.setVisibility(buttonRedeem.VISIBLE);
         }
 
         buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
 
-                    final View view = (LayoutInflater.from(v.getContext()).inflate(R.layout.order_history_layout, null));
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
-                    alertBuilder.setView(view);
-                    alertBuilder.setTitle("Delete this order?");
+                final View view = (LayoutInflater.from(v.getContext()).inflate(R.layout.order_history_layout, null));
+                final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+                alertBuilder.setTitle("Delete this order?");
+                alertBuilder.setMessage("Press OK to continue, press anywhere to cancel.");
 
-                    alertBuilder.setCancelable(true)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                        updateStatus(view.getContext(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/cancelOrder.php");
-                                }
-                            });
+                alertBuilder.setCancelable(true);
+                alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateStatus(view.getContext(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/cancelOrder.php");
+                    }
+                });
 
-                    Dialog dialog = alertBuilder.create();
-                    dialog.show();
-                    MenuFragment.allowRefresh = true;
+                Dialog dialog = alertBuilder.create();
+                dialog.show();
+                MenuFragment.allowRefresh = true;
+                OrderMainActivity.listOrder = null;
 
-                    OrderMainActivity.listOrder = null;
-
-                }
-            });
+            }
+        });
 
         buttonRedeem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // add this, your class to the bracket of the intent initializer, not sure the syntax correct or not
                 Intent intent = new Intent();
-                intent.putExtra(TAG,oID);
+                intent.putExtra(TAG, oID);
                 startActivity(intent);
             }
         });
@@ -114,7 +113,7 @@ public class OrderDetailFragment extends Fragment {
     public void updateStatus(Context context, String url) {
         //mPostCommentResponse.requestStarted();
         RequestQueue queue = Volley.newRequestQueue(context);
-
+        textViewOrderID.setText(orderID + " ");
         //Send data
         try {
 
@@ -155,7 +154,7 @@ public class OrderDetailFragment extends Fragment {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put("OrderID", oID);
+                    params.put("OrderID", textViewOrderID.getText().toString());
                     params.put("OrderStatus", "Cancelled");
 
                     return params;
@@ -175,5 +174,4 @@ public class OrderDetailFragment extends Fragment {
         }
 
     }
-
 }

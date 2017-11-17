@@ -104,6 +104,6 @@ public class Order {
     }
 
     public void setProdName(String prodName) {
-        this.prodName = this.prodName;
+        this.prodName = prodName;
     }
 }

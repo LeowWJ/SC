@@ -16,10 +16,10 @@ import my.edu.tarc.order.Objects.Product;
 
 public class OrderMainActivity extends AppCompatActivity{
 
-    private static String canteenName, stallName, walletID, productID, productName, productDesc,
-            orderStatus, orderDateTime;
-    private static int orderID, orderAmount, loyaltyPoint;
-    private static double walletBal, productPrice, payAmount;
+    private static String canteenName = null, stallName = null, walletID = null, productID = null, productName = null, productDesc = null,
+            orderStatus = null, orderDateTime = null;
+    private static int orderID = 0, orderAmount = 0, loyaltyPoint = 0;
+    private static double walletBal = 0, productPrice = 0, payAmount = 0;
     public static List<Product> listMenu = null;
     public static List<Order> listOrder = null;
 

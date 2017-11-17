@@ -61,6 +61,7 @@ public class OrderHistoryFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_order_history, container, false);
         allowRefresh = false;
         listViewOrderHistory = v.findViewById(R.id.listViewOrderHistory);
+        progressDialog = new ProgressDialog(v.getContext());
         if (OrderMainActivity.listOrder == null) {
             OrderMainActivity.listOrder = new ArrayList<>();
 
@@ -73,30 +74,24 @@ public class OrderHistoryFragment extends Fragment {
             loadListing();
         }
 
-        /*listViewOrderHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewOrderHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Order chosenOrder = (Order) parent.getItemAtPosition(position);
-                int chosenOrderID = chosenOrder.getOrderID();
-                String orderDateTime = chosenOrder.getOrderDateTime();
-                String chosenProdName = chosenOrder.getProdName();
-                int chosenOrderAmount = chosenOrder.getOrderQuantity();
-                double chosenOrderTotal = chosenOrder.getPayAmount();
-                String chosenOrderStatus = chosenOrder.getOrderStatus();
-                OrderMainActivity.setOrderID(chosenOrderID);
-                OrderMainActivity.setProdName(chosenProdName);
-                OrderMainActivity.setOrderDateTime(orderDateTime);
-                OrderMainActivity.setOrderAmount(chosenOrderAmount);
-                OrderMainActivity.setOrderTotal(chosenOrderTotal);
-                OrderMainActivity.setOrderStatus(chosenOrderStatus);
+                OrderMainActivity.setOrderID(chosenOrder.getOrderID());
+                OrderMainActivity.setProdName(chosenOrder.getProdName());
+                OrderMainActivity.setOrderDateTime(chosenOrder.getOrderDateTime());
+                OrderMainActivity.setOrderAmount(chosenOrder.getOrderQuantity());
+                OrderMainActivity.setOrderTotal(chosenOrder.getPayAmount());
+                OrderMainActivity.setOrderStatus(chosenOrder.getOrderStatus());
                 OrderDetailFragment nextFrag= new OrderDetailFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content, nextFrag,"findThisFragment")
+                        .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                         .addToBackStack(null)
                         .commit();
             }
-        });*/
+        });
 
         return v;
     }
@@ -139,7 +134,7 @@ public class OrderHistoryFragment extends Fragment {
                     //set output stream
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                    String post_data = URLEncoder.encode("StudID", "UTF-8") + "=" + URLEncoder.encode(walletID, "UTF-8");
+                    String post_data = URLEncoder.encode("WalletID", "UTF-8") + "=" + URLEncoder.encode(walletID, "UTF-8");
 
                     bufferedWriter.write(post_data);
                     bufferedWriter.flush();
@@ -175,9 +170,9 @@ public class OrderHistoryFragment extends Fragment {
         @Override
         protected void onPreExecute() {
 
-/*            if (!progressDialog.isShowing()) ;
+            if (!progressDialog.isShowing()) ;
             progressDialog.setMessage("Retrieving Order History");
-            progressDialog.show();*/
+            progressDialog.show();
 
         }
 
@@ -192,12 +187,12 @@ public class OrderHistoryFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject courseResponse= (JSONObject) jsonArray.get(i);
 
-                        int orderID = courseResponse.getInt("OrderID");
-                        int prodID = courseResponse.getInt("ProdID");
+                        int orderID = Integer.parseInt(courseResponse.getString("OrderID"));
+                        int prodID = Integer.parseInt(courseResponse.getString("ProdID"));
                         String orderDateTime = courseResponse.getString("OrderDateTime");
-                        int orderQuantity = courseResponse.getInt("OrderQuantity");
+                        int orderQuantity = Integer.parseInt(courseResponse.getString("OrderQuantity"));
                         String orderStatus = courseResponse.getString("OrderStatus");
-                        double payAmount = courseResponse.getDouble("PayAmount");
+                        double payAmount = Double.parseDouble(courseResponse.getString("PayAmount"));
                         String payDateTime = courseResponse.getString("PayDateTime");
                         String prodName = courseResponse.getString("ProdName");
 
