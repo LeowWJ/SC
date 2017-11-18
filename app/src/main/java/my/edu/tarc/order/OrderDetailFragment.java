@@ -79,7 +79,7 @@ public class OrderDetailFragment extends Fragment {
                 final View view = (LayoutInflater.from(v.getContext()).inflate(R.layout.order_history_layout, null));
                 final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
                 alertBuilder.setTitle("Delete this order?");
-                alertBuilder.setMessage("Press OK to continue, press anywhere to cancel.");
+                alertBuilder.setMessage("Press OK to continue, press anywhere around this box to cancel.");
 
                 alertBuilder.setCancelable(true);
                 alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

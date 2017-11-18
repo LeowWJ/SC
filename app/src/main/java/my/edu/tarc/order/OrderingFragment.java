@@ -1,4 +1,4 @@
-/*package my.edu.tarc.order;
+package my.edu.tarc.order;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +39,10 @@ public class OrderingFragment extends Fragment {
     String walletID = OrderMainActivity.getwID();
     TextView textViewProductName, textViewProductDesc, textViewPrice, textViewTotal;
     EditText editTextAmount, editTextDiscount;
+    int orderQty;
     double productPrice, total;
     Button buttonOrder, buttonApply;
-    boolean ticketApplied;
+    static boolean ticketApplied;
     String orderDT;
     ProgressDialog progressDialog;
 
@@ -74,38 +74,42 @@ public class OrderingFragment extends Fragment {
         buttonOrder = v.findViewById(R.id.buttonOrder);
         buttonApply = v.findViewById(R.id.buttonApplyCode);
 
-        buttonOrder.setOnClickListener(new View.OnClickListener() {
+        editTextAmount.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                orderDT = df.format(c.getTime());
-                String orderQtyText = editTextAmount.getText().toString();
-                int orderQuantity = 0;
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 try{
-                    orderQuantity = parseInt(orderQtyText);
+                    orderQty = Integer.parseInt(editTextAmount.getText().toString());
+                    if (TextUtils.isEmpty(editTextAmount.getText().toString())) {
+                        editTextAmount.setError("Field cannot be empty");
+                    }
+                    else if (orderQty <= 0){
+                        editTextAmount.setError("Minimum 1 order shall be made to proceed.");
+                    }
+                    else{
+                        total = orderQty * productPrice;
+                        textViewTotal.setText(textViewTotal.getText().toString() + " " + total);
+                    }
                 }
                 catch(Exception e){
                     editTextAmount.setError("Only integer values are allowed.");
                 }
+                return true;
+            }
+        });
 
+        buttonOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                if (TextUtils.isEmpty(orderQtyText)) {
-                    editTextAmount.setError("Field cannot be empty");
-                }
-                else if (orderQuantity <= 0){
-                    editTextAmount.setError("Minimum 1 order shall be made to proceed.");
-                }
-                else {
-                    total = orderQuantity * productPrice;
                     final AlertDialog.Builder confirmation = new AlertDialog.Builder(getActivity());
                     confirmation.setCancelable(false);
                     confirmation.setTitle("Amount To Be Paid");
+                    confirmation.setMessage("RM " + total + " will be duducted from your wallet.");
                     confirmation.setPositiveButton("Pay",new DialogInterface.OnClickListener(){
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    makeOrder();
+                                    //makeOrder();
                                     OrderMainActivity.listOrder = null;
                                 }
                             });
@@ -118,7 +122,9 @@ public class OrderingFragment extends Fragment {
                     confirmation.show();
                 }
             }
-        });
+        );
+
+
 
         buttonApply.setOnClickListener(new View.OnClickListener() {
 
@@ -132,7 +138,15 @@ public class OrderingFragment extends Fragment {
                 }
 
                 else {
-                    ticketApplied = checkEligibilty(discountCode, walletID);
+                    checkEligibilty(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/getOrderHistory.php", discountCode, walletID);
+                    if (ticketApplied == true && editTextAmount.getText().toString().matches("^10.*")){
+                        total -= 10;
+                        textViewTotal.setText(R.string.total + " " + total);
+                    }
+                    else if (ticketApplied == true && editTextAmount.getText().toString().matches("^5.*")){
+                        total -= 5;
+                        textViewTotal.setText(R.string.total + " " + total);
+                    }
                 }
             }
         });
@@ -140,57 +154,73 @@ public class OrderingFragment extends Fragment {
         return v;
     }
 
-    private void makeOrder() {
-        class UploadImage extends AsyncTask<Bitmap, Void, String> {
-            String ProdName = txtProdName.getText().toString();
-            String ProdCat = txtCat.getText().toString();
-            String ProdDesc = txtDesc.getText().toString();
-            String ProdPrice = txtPrice.getText().toString();
-            String ProdQuantity = txtQuantity.getText().toString();
-            String SupplierName = txtSupplier.getText().toString();
+    public void checkEligibilty(Context context, String url, final String disCode, final String wID){
+        //mPostCommentResponse.requestStarted();
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Boolean result = false;
+        //Send data
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Boolean res;
+                            JSONObject jsonObject;
+                            try {
+                                String err = "";
+                                jsonObject = new JSONObject(response);
+                                int success = jsonObject.getInt("success");
+                                String message = jsonObject.getString("message");
+                                if (success == 0) {
+                                    Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                    OrderingFragment.ticketApplied = true;
 
-            ProgressDialog loading;
-            RequestHandler rh = new RequestHandler();
+                                } else if (success == 1) {
+                                        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                        OrderingFragment.ticketApplied = false;
+                                }
+                                else {
+                                    Toast.makeText(getActivity().getApplicationContext(), "err", Toast.LENGTH_SHORT).show();
+                                    OrderingFragment.ticketApplied = false;
+                                }
+                                //show error
+                                if (err.length() > 0) {
+                                    Toast.makeText(getActivity().getApplicationContext(), err, Toast.LENGTH_LONG).show();
+                                    OrderingFragment.ticketApplied = false;
+                                }
 
-            protected void onPreExecute() {
-                loading = ProgressDialog.show(OrderingFragment.this.getActivity(), "Making Order", "Please wait...", true, true);
-            }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getActivity().getApplicationContext(), "Error. " + error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("WalletID", wID);
+                    params.put("DiscountCode",disCode);
+                    return params;
+                }
 
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                loading.dismiss();
-                Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            protected String doInBackground(Bitmap... params) {
-                Bitmap bitmap = params[0];
-                String ProdImage = getStringImage(bitmap);
-
-                HashMap<String, String> data = new HashMap<>();
-
-
-                data.put("ProdName", ProdName);
-                data.put("ProdCat", ProdCat);
-                data.put("ProdDesc", ProdDesc);
-                data.put("ProdPrice", ProdPrice);
-                data.put("ProdQuantity", ProdQuantity);
-                data.put("ProdImage", ProdImage);
-                data.put("MercName", Login.LOGGED_IN_USER);
-                data.put("SupplierName",SupplierName);
-
-
-
-                String result = rh.sendPostRequest(UPLOAD_URL, data);
-
-                return result;
-            }
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        UploadImage ui = new UploadImage();
-        ui.execute(bitmap);
-
     }
 
-
-}*/
+}

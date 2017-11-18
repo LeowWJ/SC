@@ -55,8 +55,8 @@ public class OrderMainActivity extends AppCompatActivity{
             finish();
         }
         walletID = extras.getString("walletID");
-        walletBal = extras.getDouble("balance", 0);
-        loyaltyPoint = extras.getInt("loyaltyPoint",0);
+        walletBal = Double.parseDouble(extras.getString("balance"));
+        loyaltyPoint = Integer.parseInt(extras.getString("loyaltyPoint"));
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frameOrderMain, CanteenFragment.newInstance());
