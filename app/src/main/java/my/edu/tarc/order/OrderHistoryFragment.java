@@ -30,7 +30,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 import my.edu.tarc.order.Objects.Order;
 import my.edu.tarc.order.Objects.OrderHistoryAdapter;
@@ -80,6 +79,7 @@ public class OrderHistoryFragment extends Fragment {
                                     int position, long id) {
                 Order chosenOrder = (Order) parent.getItemAtPosition(position);
                 OrderMainActivity.setOrderID(chosenOrder.getOrderID());
+                OrderMainActivity.setProdID(chosenOrder.getProdID()+" ");
                 OrderMainActivity.setProdName(chosenOrder.getProdName());
                 OrderMainActivity.setOrderDateTime(chosenOrder.getOrderDateTime());
                 OrderMainActivity.setOrderAmount(chosenOrder.getOrderQuantity());
@@ -97,7 +97,7 @@ public class OrderHistoryFragment extends Fragment {
     }
 
     private void loadListing() {
-        final OrderHistoryAdapter adapter = new OrderHistoryAdapter(getActivity(), R.layout.fragment_menu, OrderMainActivity.listOrder);
+        final OrderHistoryAdapter adapter = new OrderHistoryAdapter(getActivity(), R.layout.fragment_order_menu, OrderMainActivity.listOrder);
         listViewOrderHistory.setAdapter(adapter);
 
     }
@@ -196,7 +196,7 @@ public class OrderHistoryFragment extends Fragment {
                         String payDateTime = courseResponse.getString("PayDateTime");
                         String prodName = courseResponse.getString("ProdName");
 
-                        if (orderStatus == "Paid" || orderStatus == "Cancelled"){
+                        if (orderStatus == "Accepted" || orderStatus == "Cancelled"){
                             Order history = new Order(orderID, walletID, prodID, prodName, orderDateTime, orderQuantity, orderStatus, payAmount, null);
                             OrderMainActivity.listOrder.add(history);
                         }

@@ -54,7 +54,7 @@ public class CanteenFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "This feature will be available on next update.",
-                        Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG).show();
             }
         });
 
@@ -62,7 +62,7 @@ public class CanteenFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "This feature will be available on next update.",
-                        Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG).show();
             }
         });
 
@@ -70,7 +70,7 @@ public class CanteenFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "This feature will be available on next update.",
-                        Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG).show();
             }
         });
 

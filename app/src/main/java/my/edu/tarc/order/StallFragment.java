@@ -56,7 +56,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         OrderMainActivity.setStall("lai");
-                        MenuFragment nextFrag= new MenuFragment();
+                        OrderMenuFragment nextFrag= new OrderMenuFragment();
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                                 .addToBackStack(null)
@@ -68,7 +68,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         OrderMainActivity.setStall("Canteen 1 Convenience Store");
-                        MenuFragment nextFrag= new MenuFragment();
+                        OrderMenuFragment nextFrag= new OrderMenuFragment();
                         getActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                                 .addToBackStack(null)
@@ -80,7 +80,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -88,7 +88,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -96,7 +96,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -104,7 +104,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -112,7 +112,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -120,7 +120,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -128,7 +128,7 @@ public class StallFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getContext(), "This feature will be available on next update.",
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 

@@ -34,7 +34,7 @@ import my.edu.tarc.order.Objects.Product;
 
 import com.android.volley.RequestQueue;
 
-public class MenuFragment extends Fragment {
+public class OrderMenuFragment extends Fragment {
 
     public String MercName = OrderMainActivity.getStall();
     public static boolean allowRefresh;
@@ -44,7 +44,7 @@ public class MenuFragment extends Fragment {
     ProgressDialog progressDialog;
     RequestQueue queue;
 
-    public MenuFragment() {
+    public OrderMenuFragment() {
         // Required empty public constructor
     }
 
@@ -59,7 +59,7 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_menu, container, false);
+        View v = inflater.inflate(R.layout.fragment_order_menu, container, false);
         allowRefresh = false;
         gridViewMenu = v.findViewById(R.id.gridViewMenu);
 
@@ -79,26 +79,22 @@ public class MenuFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Product chosenProd = (Product) parent.getItemAtPosition(position);
-                String chosenProdID = chosenProd.getProdID();
-                String chosenProdName = chosenProd.getProdName();
-                String chosenProdDesc = chosenProd.getProdDesc();
-                double chosenProdPrice = chosenProd.getPrice();
-                OrderMainActivity.setProdID(chosenProdID);
-                OrderMainActivity.setProdName(chosenProdName);
-                OrderMainActivity.setProdDesc(chosenProdDesc);
-                OrderMainActivity.setProdPrice(chosenProdPrice);
-                /*OrderingFragment nextFrag= new OrderingFragment();
+                OrderMainActivity.setProdID(chosenProd.getProdID());
+                OrderMainActivity.setProdName(chosenProd.getProdName());
+                OrderMainActivity.setProdDesc(chosenProd.getProdDesc());
+                OrderMainActivity.setProdPrice(chosenProd.getPrice());
+                OrderingFragment nextFrag= new OrderingFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content, nextFrag,"findThisFragment")
+                        .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
                         .addToBackStack(null)
-                        .commit();*/
+                        .commit();
             }
         });
             return v;
     }
 
     private void loadListing() {
-        final MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.fragment_menu, OrderMainActivity.listMenu);
+        final MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.fragment_order_menu, OrderMainActivity.listMenu);
         gridViewMenu.setAdapter(adapter);
 
     }
@@ -199,7 +195,7 @@ public class MenuFragment extends Fragment {
                         String ImageURL = courseResponse.getString("url");
 
 
-                        Product listing = new Product(ProdID, ProdName, ProdCat, ProdDesc, ProdPrice ,ImageURL);
+                        Product listing = new Product(ProdID, ProdName, ProdCat, ProdDesc, ProdPrice, ImageURL);
                         OrderMainActivity.listMenu.add(listing);
 
                     }

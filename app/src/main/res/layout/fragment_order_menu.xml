@@ -3,7 +3,7 @@
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="my.edu.tarc.order.MenuFragment">
+    tools:context="my.edu.tarc.order.OrderMenuFragment">
 
     <GridView
         android:id="@+id/gridViewMenu"

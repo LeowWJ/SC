@@ -1,5 +1,6 @@
 package my.edu.tarc.order;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -67,9 +68,13 @@ public class OrderDetailFragment extends Fragment {
         textViewPayment.setText(total + " ");
         textViewOrderDateTime.setText(orderDateTime);
         textViewPaymentStatus.setText(status);
-        if (textViewPaymentStatus.getText().toString() == "Paid") {
-            buttonCancelOrder.setVisibility(Button.VISIBLE);
-            buttonRedeem.setVisibility(Button.VISIBLE);
+        if (status.matches("Pending")) {
+            getActivity().runOnUiThread(new Runnable(){
+                @Override
+                public void run() {
+                    buttonCancelOrder.setVisibility(View.VISIBLE);
+                    buttonRedeem.setVisibility(View.VISIBLE);
+                } });
         }
 
         buttonCancelOrder.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +96,7 @@ public class OrderDetailFragment extends Fragment {
 
                 Dialog dialog = alertBuilder.create();
                 dialog.show();
-                MenuFragment.allowRefresh = true;
+                OrderMenuFragment.allowRefresh = true;
                 OrderMainActivity.listOrder = null;
 
             }
