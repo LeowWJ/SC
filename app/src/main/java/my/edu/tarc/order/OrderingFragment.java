@@ -97,7 +97,7 @@ public class OrderingFragment extends Fragment {
                         confirmation.setPositiveButton("Pay",new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if(ticketApplied == true)
+                                if(ticketApplied)
                                     updateRedeemDate(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/insertRedeemDate.php", disCode);
                                 makeOrder(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/insertOrder.php",
                                         walletID, prodID, orderQty+ "", total + "");
@@ -136,20 +136,20 @@ public class OrderingFragment extends Fragment {
                     editTextDiscount.setError("Field cannot be empty");
                     ticketApplied = false;
                 }
-                else if(ticketApplied == false && orderQty == 0){
+                else if(!ticketApplied && orderQty == 0){
                     editTextDiscount.setError("Please check your order amount first.");
                 }
                 else {
                     editTextDiscount.setError(null);
                     checkEligibility(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/checkDiscountCode.php", editTextDiscount.getText().toString(), walletID);
                     disCode = editTextDiscount.getText().toString();
-                    if (ticketApplied == true && disCode.matches("^10.*")){
+                    if (ticketApplied && disCode.matches("^10.*")){
                         total = total - 10;
                         if (total <= 0.00)
                             total = 0.00;
                         textViewTotal.setText(R.string.total + " " + total);
                     }
-                    else if (ticketApplied == true && disCode.matches("^5.*")){
+                    else if (ticketApplied && disCode.matches("^5.*")){
                         total = total - 5;
                         if (total <= 0.00)
                             total = 0.00;
