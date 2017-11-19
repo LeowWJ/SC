@@ -1,10 +1,8 @@
 package my.edu.tarc.order;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -36,11 +34,11 @@ import static java.lang.Integer.parseInt;
 
 public class OrderingFragment extends Fragment {
     public static final String UPLOAD_URL = "https://leowwj-wa15.000webhostapp.com/add_order.php";
-    String walletID = OrderMainActivity.getwID();
+    String walletID = OrderMainActivity.getwID(), prodID = OrderMainActivity.getProdID();
     String disCode;
     TextView textViewProductName, textViewProductDesc, textViewPrice, textViewTotal;
     EditText editTextAmount, editTextDiscount;
-    int orderQty;
+    int orderQty = 0;
     double productPrice, total;
     Button buttonOrder, buttonApply;
     static boolean ticketApplied = false;
@@ -66,11 +64,8 @@ public class OrderingFragment extends Fragment {
         textViewProductDesc.setText(OrderMainActivity.getProdDesc());
         textViewPrice.setText(OrderMainActivity.getProdPrice() + "");
         editTextAmount = v.findViewById(R.id.editTextAmount);
-        editTextDiscount = v.findViewById(R.id.editTextDiscount);
+        editTextDiscount = v.findViewById(R.id.editTextDiscountCode);
         productPrice = OrderMainActivity.getProdPrice();
-
-
-        final String prodID = OrderMainActivity.getProdID();
         total = 0;
 
         buttonOrder = v.findViewById(R.id.buttonOrder);
@@ -123,7 +118,7 @@ public class OrderingFragment extends Fragment {
                         final AlertDialog.Builder confirmation = new AlertDialog.Builder(getActivity());
                         confirmation.setCancelable(false);
                         confirmation.setTitle("Amount To Be Paid");
-                        confirmation.setMessage("RM " + total + " will be duducted from your wallet.");
+                        confirmation.setMessage("Redeem your order at the canteen stall.");
                         confirmation.setPositiveButton("Pay",new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -155,23 +150,24 @@ public class OrderingFragment extends Fragment {
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String discountCode = editTextDiscount.getText().toString();
                 ticketApplied = false;
-                if (TextUtils.isEmpty(discountCode)) {
-                    editTextAmount.setError("Field cannot be empty");
+                if (editTextDiscount.getText().toString().matches("")) {
+                    editTextDiscount.setError("Field cannot be empty");
                 }
-
+                else if(ticketApplied == false && orderQty == 0){
+                    editTextDiscount.setError("Please specify your order amount first.");
+                }
                 else {
-                    checkEligibility(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/checkDiscountCode.php", discountCode, walletID);
-                    if (ticketApplied == true && editTextAmount.getText().toString().matches("^10.*")){
-                        disCode = discountCode;
+                    checkEligibility(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/checkDiscountCode.php", editTextDiscount.getText().toString(), walletID);
+                    if (ticketApplied == true && editTextDiscount.getText().toString().matches("^10.*")){
+                        disCode = editTextDiscount.getText().toString();
                         total -= 10;
                         if (total < 0.00)
                             total = 0.00;
                         textViewTotal.setText(R.string.total + " " + total);
                     }
-                    else if (ticketApplied == true && editTextAmount.getText().toString().matches("^5.*")){
-                        disCode = discountCode;
+                    else if (ticketApplied == true && editTextDiscount.getText().toString().matches("^5.*")){
+                        disCode = editTextDiscount.getText().toString();
                         total -= 5;
                         if (total < 0.00)
                             total = 0.00;
@@ -220,7 +216,7 @@ public class OrderingFragment extends Fragment {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put("DiscountCode", couponCode);
+                    params.put("CouponCode", couponCode);
                     return params;
                 }
 
@@ -276,7 +272,7 @@ public class OrderingFragment extends Fragment {
                     params.put("WalletID", walletID);
                     params.put("ProductID", productID);
                     params.put("OrderQuantity", OrderQuantity);
-                    params.put("PayAmount",PayAmount);
+                    params.put("PayAmount", PayAmount);
                     return params;
                 }
 
@@ -304,12 +300,11 @@ public class OrderingFragment extends Fragment {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Boolean res;
                             JSONObject jsonObject;
                             try {
                                 String err = "";
                                 jsonObject = new JSONObject(response);
-                                int success = Integer.parseInt(jsonObject.getString("success"));
+                                int success = jsonObject.getInt("success");
                                 String message = jsonObject.getString("message");
                                 if (success == 0) {
                                     Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
@@ -344,7 +339,7 @@ public class OrderingFragment extends Fragment {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
                     params.put("WalletID", wID);
-                    params.put("DiscountCode",disCode);
+                    params.put("CouponCode",disCode);
                     return params;
                 }
 

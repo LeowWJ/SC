@@ -91,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewAmount" />
 
         <EditText
-            android:id="@+id/editTextDiscount"
+            android:id="@+id/editTextDiscountCode"
             style="@android:style/Widget.DeviceDefault.EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextDiscount" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextDiscountCode" />
 
         <TextView
             android:id="@+id/textViewProductName"

@@ -67,12 +67,8 @@ public class StallFragment extends Fragment {
                 buttonStall1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OrderMainActivity.setStall("Canteen 1 Convenience Store");
-                        OrderMenuFragment nextFrag= new OrderMenuFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
-                                .addToBackStack(null)
-                                .commit();
+                        Toast.makeText(getContext(), "This feature will be available on next update.",
+                                Toast.LENGTH_LONG).show();
                     }
                 });
 
