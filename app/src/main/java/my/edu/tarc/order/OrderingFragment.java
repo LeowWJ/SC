@@ -41,7 +41,7 @@ public class OrderingFragment extends Fragment {
     int orderQty = 0;
     double productPrice, total;
     Button buttonOrder, buttonApply;
-    static boolean ticketApplied = false;
+    static boolean ticketApplied;
     RequestQueue queue;
 
 
@@ -71,30 +71,6 @@ public class OrderingFragment extends Fragment {
         buttonOrder = v.findViewById(R.id.buttonOrder);
         buttonApply = v.findViewById(R.id.buttonApplyCode);
 
-        editTextAmount.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                try{
-                    orderQty = Integer.parseInt(editTextAmount.getText().toString());
-                }
-                catch(Exception e){
-                    editTextAmount.setError("Only integer values are allowed.");
-                }
-                if (TextUtils.isEmpty(editTextAmount.getText().toString())) {
-                    editTextAmount.setError("Field cannot be empty");
-                }
-                else if (orderQty <= 0){
-                    editTextAmount.setError("Minimum 1 order shall be made to proceed.");
-                }
-                else{
-                    total = orderQty * productPrice;
-                    textViewTotal.setText(R.string.total);
-                    textViewTotal.setText( textViewTotal.getText().toString() + " " + total);
-                }
-                return true;
-            }
-        });
-
         buttonOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,13 +87,12 @@ public class OrderingFragment extends Fragment {
                     editTextAmount.setError("Minimum 1 order shall be made to proceed.");
                 }
                 else{
-                    total = orderQty * productPrice;
                     textViewTotal.setText(R.string.total);
                     textViewTotal.setText( textViewTotal.getText().toString() + " " + total);
                     if(OrderMainActivity.getWalletBal() >= total){
                         final AlertDialog.Builder confirmation = new AlertDialog.Builder(getActivity());
                         confirmation.setCancelable(false);
-                        confirmation.setTitle("Amount To Be Paid");
+                        confirmation.setTitle("Amount To Be Paid = RM " + total);
                         confirmation.setMessage("Redeem your order at the canteen stall.");
                         confirmation.setPositiveButton("Pay",new DialogInterface.OnClickListener(){
                             @Override
@@ -151,6 +126,12 @@ public class OrderingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 editTextDiscount.setError(null);
+                try{
+                    orderQty = Integer.parseInt(editTextAmount.getText().toString());
+                }
+                catch(Exception e){
+                    editTextAmount.setError("Only integer values are allowed.");
+                }
                 if (editTextDiscount.getText().toString().matches("")) {
                     editTextDiscount.setError("Field cannot be empty");
                     ticketApplied = false;
@@ -161,17 +142,16 @@ public class OrderingFragment extends Fragment {
                 else {
                     editTextDiscount.setError(null);
                     checkEligibility(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/checkDiscountCode.php", editTextDiscount.getText().toString(), walletID);
-                    if (ticketApplied == true && editTextDiscount.getText().toString().matches("^10.*")){
-                        disCode = editTextDiscount.getText().toString();
-                        total -= 10;
-                        if (total < 0.00)
+                    disCode = editTextDiscount.getText().toString();
+                    if (ticketApplied == true && disCode.matches("^10.*")){
+                        total = total - 10;
+                        if (total <= 0.00)
                             total = 0.00;
                         textViewTotal.setText(R.string.total + " " + total);
                     }
-                    else if (ticketApplied == true && editTextDiscount.getText().toString().matches("^5.*")){
-                        disCode = editTextDiscount.getText().toString();
-                        total -= 5;
-                        if (total < 0.00)
+                    else if (ticketApplied == true && disCode.matches("^5.*")){
+                        total = total - 5;
+                        if (total <= 0.00)
                             total = 0.00;
                         textViewTotal.setText(R.string.total + " " + total);
                     }
@@ -310,20 +290,20 @@ public class OrderingFragment extends Fragment {
                                 String message = jsonObject.getString("message");
                                 if (success == 0) {
                                     Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                    OrderingFragment.ticketApplied = true;
+                                    ticketApplied = true;
 
                                 } else if (success == 1) {
                                         Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                                        OrderingFragment.ticketApplied = false;
+                                        ticketApplied = false;
                                 }
                                 else {
                                     Toast.makeText(getActivity().getApplicationContext(), "err", Toast.LENGTH_SHORT).show();
-                                    OrderingFragment.ticketApplied = false;
+                                    ticketApplied = false;
                                 }
                                 //show error
                                 if (err.length() > 0) {
                                     Toast.makeText(getActivity().getApplicationContext(), err, Toast.LENGTH_LONG).show();
-                                    OrderingFragment.ticketApplied = false;
+                                    ticketApplied = false;
                                 }
 
                             } catch (JSONException e) {

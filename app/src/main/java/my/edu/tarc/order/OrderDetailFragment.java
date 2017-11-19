@@ -51,7 +51,7 @@ public class OrderDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_order_detail, container, false);
         int orderID = OrderMainActivity.getOrderID();
         String prodName = OrderMainActivity.getProdName();
-        double total = OrderMainActivity.getOrderTotal();
+        double total = OrderMainActivity.getOrderTotal(), walletBal = OrderMainActivity.getWalletBal();
         String status = OrderMainActivity.getOrderStatus();
         String orderDateTime = OrderMainActivity.getOrderDateTime();
 
@@ -68,7 +68,7 @@ public class OrderDetailFragment extends Fragment {
         textViewPayment.setText(total + " ");
         textViewOrderDateTime.setText(orderDateTime);
         textViewPaymentStatus.setText(status);
-        if (status.matches("Pending")) {
+        if (status.matches("Pending") && walletBal > total) {
             getActivity().runOnUiThread(new Runnable(){
                 @Override
                 public void run() {
