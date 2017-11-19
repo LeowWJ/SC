@@ -150,14 +150,16 @@ public class OrderingFragment extends Fragment {
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ticketApplied = false;
+                editTextDiscount.setError(null);
                 if (editTextDiscount.getText().toString().matches("")) {
                     editTextDiscount.setError("Field cannot be empty");
+                    ticketApplied = false;
                 }
                 else if(ticketApplied == false && orderQty == 0){
-                    editTextDiscount.setError("Please specify your order amount first.");
+                    editTextDiscount.setError("Please check your order amount first.");
                 }
                 else {
+                    editTextDiscount.setError(null);
                     checkEligibility(getActivity(), "https://leowwj-wa15.000webhostapp.com/smart%20canteen%20system/checkDiscountCode.php", editTextDiscount.getText().toString(), walletID);
                     if (ticketApplied == true && editTextDiscount.getText().toString().matches("^10.*")){
                         disCode = editTextDiscount.getText().toString();
