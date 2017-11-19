@@ -17,7 +17,7 @@ import my.edu.tarc.order.Objects.Product;
 public class OrderMainActivity extends AppCompatActivity{
 
     private static String canteenName = null, stallName = null, walletID = null, productID = null, productName = null, productDesc = null,
-            orderStatus = null, orderDateTime = null;
+            orderStatus = null, orderDateTime = null, payDateTime = null;
     private static int orderID = 0, orderAmount = 0, loyaltyPoint = 0;
     private static double walletBal = 0, productPrice = 0, payAmount = 0;
     public static List<Product> listMenu = null;
@@ -94,6 +94,14 @@ public class OrderMainActivity extends AppCompatActivity{
 
     public static void setProdID(String prodID) {
         productID = prodID;
+    }
+
+    public static String getPayDateTime() {
+        return payDateTime;
+    }
+
+    public static void setPayDateTime(String payDT) {
+        payDateTime = payDT;
     }
 
     public static String getProdName() {

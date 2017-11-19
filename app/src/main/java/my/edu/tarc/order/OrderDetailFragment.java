@@ -113,6 +113,7 @@ public class OrderDetailFragment extends Fragment {
                 intent.putExtra("OrderQuantity",OrderMainActivity.getOrderAmount());
                 intent.putExtra("OrderStatus",OrderMainActivity.getOrderStatus());
                 intent.putExtra("PayAmount", OrderMainActivity.getOrderTotal());
+                intent.putExtra("PayDateTime",OrderMainActivity.getPayDateTime());
                 startActivity(intent);
             }
         });

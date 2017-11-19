@@ -85,6 +85,7 @@ public class OrderHistoryFragment extends Fragment {
                 OrderMainActivity.setOrderAmount(chosenOrder.getOrderQuantity());
                 OrderMainActivity.setOrderTotal(chosenOrder.getPayAmount());
                 OrderMainActivity.setOrderStatus(chosenOrder.getOrderStatus());
+                OrderMainActivity.setPayDateTime(chosenOrder.getPayDateTime());
                 OrderDetailFragment nextFrag= new OrderDetailFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frameOrderMain, nextFrag,"findThisFragment")
