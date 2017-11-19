@@ -35,8 +35,6 @@ public class OrderDetailFragment extends Fragment {
     Button buttonCancelOrder, buttonRedeem;
     TextView textViewOrderID, textViewProductName, textViewPayment, textViewPaymentStatus, textViewOrderDateTime;
     Integer orderID = OrderMainActivity.getOrderID();
-    String oID = orderID.toString();
-    final String TAG = "OrderID";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +105,14 @@ public class OrderDetailFragment extends Fragment {
             public void onClick(View v) {
                 // add this, your class to the bracket of the intent initialization
                 Intent intent = new Intent();
-                intent.putExtra(TAG, oID);
+                intent.putExtra("OrderID", OrderMainActivity.getOrderID());
+                intent.putExtra("ProdID", OrderMainActivity.getProdID());
+                intent.putExtra("WalletID",OrderMainActivity.getwID());
+                intent.putExtra("ProdName",OrderMainActivity.getProdName());
+                intent.putExtra("OrderDateTime",OrderMainActivity.getOrderDateTime());
+                intent.putExtra("OrderQuantity",OrderMainActivity.getOrderAmount());
+                intent.putExtra("OrderStatus",OrderMainActivity.getOrderStatus());
+                intent.putExtra("PayAmount", OrderMainActivity.getOrderTotal());
                 startActivity(intent);
             }
         });
